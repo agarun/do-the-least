@@ -64,43 +64,32 @@ Apply this baseline prompt:
 - The diff stays inside the task. Drive-by refactors, reformatting, and opportunistic cleanups belong in their own change.
 - New code goes in the layer that already owns the concept. Solving a local problem by scattering checks across shared code is a design failure.
 
-### Draft defects
+### Defects
 
-Treat any of these in the working diff as a defect to fix before finishing:
+Fix these before finishing:
 
 - A hand-rolled version of something the standard library or the existing platform ships.
-- An abstraction with one implementation: a single-use interface, a factory with one product, a wrapper that only delegates, a layer with one caller.
+- A single-use abstraction: interface, factory, wrapper, base class, config, or layer.
 - Speculative flexibility: config nothing sets, flags nothing flips, parameters every caller passes identically, "for future use" code paths.
-- An ad-hoc conditional bolted into a shared flow to serve one case.
+- An ad-hoc conditional bolted into a shared flow.
 - Defensive handling of states no caller can produce.
-- Comments narrating what the code visibly does. Keep only comments stating what the code cannot say, such as a non-obvious constraint.
+- Comments narrating what the code visibly does.
 - The same logic available in a shorter idiomatic form.
 - A file or function that grew substantially when the new logic had a natural home elsewhere.
-
-### Remedies to prefer
-
-When a flag fires, prefer these moves, in order:
-
-- Delete the code and let the problem be solved by what already exists, when behavior and scope remain correct.
-- Replace the code with the standard library or platform equivalent.
-- Inline the single-use layer into its only caller.
-- Move the logic to the module that already owns the concept.
-- Collapse duplicate branches into one flow.
-- Reframe the change so the conditional or mode never needs to exist.
-
-### When the least is bigger
 
 - Sometimes the genuinely simplest correct solution is a larger change: the bug is in a shared helper, or the clean fix removes a workaround others depend on. If that larger fix changes scope, risk, or user intent, explain the tradeoff and ask before proceeding.
 - Do the least means the least total complexity over the code's life, not the least typing today. Never contort a change to keep the line count down.
 
-## Output Readiness
+### When the least is bigger
 
-The draft is ready only when all of these are true:
+- Do the least means the least total complexity over the code's life, not the least typing today. Never contort a change to keep the line count down.
+- Sometimes the genuinely simplest correct solution is a larger change: the bug is in a shared helper, or the clean fix removes a workaround others depend on. If that larger fix belongs in helpers or existing workarounds, take that path. If it changes scope, risk, or user intent, explain the tradeoff and ask before proceeding.
 
-1. The stated problem is fully solved, including named edge cases and caller-visible error handling.
-2. The change builds on existing helpers, patterns, and ownership boundaries where they exist.
-3. No draft defect remains unless it is explicitly justified by the problem.
-4. Every remaining line has survived the prune question: what breaks if I delete this?
-5. The smallest meaningful test has passed, or the absence of a focused test is explained.
+### Output readiness
 
-When reporting back, summarize the approach and name the verification performed. Do not dump the full diff unless the user asks for it.
+We are ready when:
+
+- The stated problem is fully solved, including edge cases and errors.
+- No draft defect remains without a reason.
+- Remaining lines survive the prune question: what breaks if I delete this?
+- The smallest meaningful test passed, or the absence of a focused test is explained.
