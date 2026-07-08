@@ -1,6 +1,6 @@
 # do-the-least
 
-Fix your bug or build your feature while doing the least. Works best with small changes where you weren't planning on over-engineering and need to reign in the beast.
+Fix your bug or build your feature with the least sufficient change. Works best with small changes where you weren't planning on over-engineering and need to reign in the beast.
 
 ## Install
 
@@ -20,5 +20,6 @@ The skill never fires on its own, so you must invoke it:
 
 ```
 fix this bug but /do-the-least
-/do-the-least add 'theme' to user settings
+(claude) /do-the-least add 'theme' picker to user settings
+(codex) $do-the-least add 'theme' picker to user settings
 ```

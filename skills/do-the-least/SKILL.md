@@ -1,29 +1,35 @@
 ---
 name: do-the-least
-description: Implement a change with the smallest clean, minimal, idiomatic diff that fully solves the problem. Avoids over-engineering.
+description: Implement a scoped code change with the smallest clean, idiomatic diff that fully solves the problem. Use when the user wants a high-quality implementation while avoiding over-engineering.
 disable-model-invocation: true
 ---
 
 # Do the least
 
-Use this skill to implement changes with the most minimal diff needed to achieve the goal, while retaining high code quality, maintainability, and cleanliness.
+Use this skill to implement changes with the most minimal diff needed to achieve the goal, while preserving high code quality, correctness, maintainability, cleanliness, and the codebase's idiom.
 
-The aim is a simple, elegant diff where over-engineering is treated as a defect. This skill should push the implementer to be disciplined about footprint. Do not merely avoid obvious bloat. Actively search for the framing of the change where unnecessary complexity and layering never needs to exist at all, so the final implementation is direct and reads as if it was always part of the codebase.
+The aim is a simple, elegant diff where over-engineering is treated as a defect. Push the implementer to be disciplined about footprint. Do not merely avoid obvious bloat. Actively search for the framing of the change where unnecessary complexity and layering never need to exist, so the final implementation is direct and reads as if it was always part of the codebase.
 
 ## Process
 
-### 1. Apply the prompt below:
+### 1. Start from the baseline
 
-Start from the baseline:
+Apply this baseline prompt:
 
 > Implement the requested change with the smallest diff that fully solves the problem.
-> If the codebase has a helper, pattern, or seam that already does most of the work, use it. Else, reframe the changes until landing on a minimal inmplementation that is thorough, direct, clean, and with correct behavior.
-> Prefer deleting code over editing it, and surgically editing existing code over adding new code, if possible.
+> If the codebase has a helper, pattern, or seam that already does most of the work, use it. Otherwise, reframe the changes and prune until landing on a minimal inmplementation that is thorough, direct, clean, and with correct behavior.
+> Prefer deleting code over editing it, and surgically editing existing code over adding new code, when behavior and scope remain correct..
 > Keep the implementation clean, minimal, and idiomatic to this codebase. Avoid over-engineering problems. Solve the problem completely, then stop.
 
-### 2. Apply these lessons:
+### 2. Run the tight loop
 
-Apply the baseline prompt, plus these numbered lessons:
+1. Inspect the relevant code and tests.
+2. Identify the existing helper, pattern, owner, or idiom that should carry the change.
+3. Implement the smallest complete change.
+4. Prune the draft line by line.
+5. Run the smallest meaningful test, or state why no focused test applies.
+
+### 3. Apply these lessons
 
 1. **Reuse before writing.**
    - Check for the existing helper, utility, or pattern first. The codebase has potentially already solved an adjacent problem.
@@ -58,11 +64,11 @@ Apply the baseline prompt, plus these numbered lessons:
 - The diff stays inside the task. Drive-by refactors, reformatting, and opportunistic cleanups belong in their own change.
 - New code goes in the layer that already owns the concept. Solving a local problem by scattering checks across shared code is a design failure.
 
-### Flag in your own draft
+### Draft defects
 
 Treat any of these in the working diff as a defect to fix before finishing:
 
-- A hand-rolled version of something the standard library or platform ships.
+- A hand-rolled version of something the standard library or the existing platform ships.
 - An abstraction with one implementation: a single-use interface, a factory with one product, a wrapper that only delegates, a layer with one caller.
 - Speculative flexibility: config nothing sets, flags nothing flips, parameters every caller passes identically, "for future use" code paths.
 - An ad-hoc conditional bolted into a shared flow to serve one case.
@@ -75,7 +81,7 @@ Treat any of these in the working diff as a defect to fix before finishing:
 
 When a flag fires, prefer these moves, in order:
 
-- Delete the code and let the problem be solved by what already exists.
+- Delete the code and let the problem be solved by what already exists, when behavior and scope remain correct.
 - Replace the code with the standard library or platform equivalent.
 - Inline the single-use layer into its only caller.
 - Move the logic to the module that already owns the concept.
@@ -84,17 +90,17 @@ When a flag fires, prefer these moves, in order:
 
 ### When the least is bigger
 
-- Sometimes the genuinely simplest correct solution is a larger change: the bug is in a shared helper, or the clean fix removes a workaround others depend on. Say so explicitly and propose it before building it.
+- Sometimes the genuinely simplest correct solution is a larger change: the bug is in a shared helper, or the clean fix removes a workaround others depend on. If that larger fix changes scope, risk, or user intent, explain the tradeoff and ask before proceeding.
 - Do the least means the least total complexity over the code's life, not the least typing today. Never contort a change to keep the line count down.
 
-## Output
+## Output Readiness
 
-When presenting the finished change:
+The draft is ready only when all of these are true:
 
-1. State the problem and the approach in one or two sentences, including what existing code the change builds on.
-2. Present the diff. It should already have survived the prune pass in lesson 7.
-3. Name the test that proves the new behavior and show that it passes.
-4. If a plausible smaller or larger framing was considered and rejected, say why in one sentence. Otherwise say nothing about alternatives.
-5. Report the net size of the change: files touched, rough lines added and removed, dependencies added (which should almost always be zero).
+1. The stated problem is fully solved, including named edge cases and caller-visible error handling.
+2. The change builds on existing helpers, patterns, and ownership boundaries where they exist.
+3. No draft defect remains unless it is explicitly justified by the problem.
+4. Every remaining line has survived the prune question: what breaks if I delete this?
+5. The smallest meaningful test has passed, or the absence of a focused test is explained.
 
-Do not pad the output with restated requirements, tour-guide commentary on the diff, or speculative follow-up work. The bar for done: the problem is fully solved, the tests pass, and nothing in the diff can be deleted without breaking something.
+When reporting back, summarize the approach and name the verification performed. Do not dump the full diff unless the user asks for it.
