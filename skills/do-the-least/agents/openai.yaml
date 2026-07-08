@@ -1,7 +1,7 @@
 interface:
-  display_name: "Do the Least"
-  short_description: "Implement the smallest complete idiomatic code change."
-  default_prompt: "Use $do-the-least to implement this with the smallest complete idiomatic diff."
+  display_name: 'do-the-least'
+  short_description: 'Implement the smallest complete idiomatic code change.'
+  default_prompt: 'Use $do-the-least to implement this with the smallest complete idiomatic diff.'
 
 policy:
   allow_implicit_invocation: false
