@@ -65,6 +65,7 @@ Apply this baseline prompt:
 - The change fully solves the stated problem. Minimal never means incomplete: correctness, the named edge cases, and error handling that callers depend on are inside the scope, not beyond it.
 - The diff stays inside the task. Drive-by refactors, reformatting, and opportunistic cleanups belong in their own change.
 - New code goes in the layer that already owns the concept. Solving a local problem by scattering ad-hoc conditionals across shared code is a design failure.
+- Never edit or weaken a test to shrink the diff or make it pass.
 
 ### Defects
 

@@ -1,6 +1,6 @@
 # do-the-least
 
-Fix your bug or build your feature with the least sufficient change. Works best with small changes where you weren't planning on over-engineering and need to reign in the beast.
+Fix your bug or build your feature with the least sufficient change. Works best for small changes where you want to keep the diff tight without cutting corners.
 
 ## Install
 
